@@ -2,5 +2,6 @@
 
 members = [
     "bfs",
-    "quick-sort"
+    "quick-sort",
+    "binary-tree"
 ]
