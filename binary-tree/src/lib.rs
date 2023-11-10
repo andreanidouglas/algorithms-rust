@@ -3,12 +3,12 @@
 use anyhow::Result;
 
 #[derive(Debug, PartialEq, Eq)]
-struct Tree {
-    root: Option<Node>,
+struct Tree<T> {
+    root: Option<Node<T>>,
 }
 
-impl Tree {
-    fn insert(&mut self, value: i32) -> Result<()> {
+impl<T: PartialEq + PartialOrd + Copy> Tree<T> {
+    fn insert(&mut self, value: T) -> Result<()> {
         match &mut self.root {
             None => {
                 self.root = Some(Node::new(value));
@@ -18,7 +18,7 @@ impl Tree {
         }
     }
 
-    fn search(&self, value: i32) -> Option<i32> {
+    fn search(&self, value: T) -> Option<T> {
         if let Some(root) = &self.root {
             if root.value == value {
                 return Some(root.value);
@@ -32,14 +32,14 @@ impl Tree {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-struct Node {
-    value: i32,
-    left: Option<Box<Node>>,
-    right: Option<Box<Node>>,
+struct Node<T> {
+    value: T,
+    left: Option<Box<Node<T>>>,
+    right: Option<Box<Node<T>>>,
 }
 
-impl Node {
-    fn new(value: i32) -> Self {
+impl<T: PartialEq + PartialOrd + Copy> Node<T> {
+    fn new(value: T) -> Self {
         Self {
             left: None,
             right: None,
@@ -47,7 +47,7 @@ impl Node {
         }
     }
 
-    fn search(&self, value: i32) -> Option<i32> {
+    fn search(&self, value: T) -> Option<T> {
         if value > self.value {
             self.search_right(value)
         } else {
@@ -55,7 +55,7 @@ impl Node {
         }
     }
 
-    fn search_right(&self, value: i32) -> Option<i32> {
+    fn search_right(&self, value: T) -> Option<T> {
         if let Some(right) = &self.right {
             if right.value == value {
                 return Some(right.value);
@@ -67,7 +67,7 @@ impl Node {
         None
     }
 
-    fn search_left(&self, value: i32) -> Option<i32> {
+    fn search_left(&self, value: T) -> Option<T> {
         if let Some(left) = &self.left {
             if left.value == value {
                 return Some(left.value);
@@ -79,7 +79,7 @@ impl Node {
         None
     }
 
-    fn insert(&mut self, value: i32) -> Result<()> {
+    fn insert(&mut self, value: T) -> Result<()> {
         if value > self.value {
             self.insert_right(value)
         } else {
@@ -87,7 +87,7 @@ impl Node {
         }
     }
 
-    fn insert_right(&mut self, value: i32) -> Result<()> {
+    fn insert_right(&mut self, value: T) -> Result<()> {
         if let Some(right) = &mut self.right {
             right.insert(value)
         } else {
@@ -96,7 +96,7 @@ impl Node {
         }
     }
 
-    fn insert_left(&mut self, value: i32) -> Result<()> {
+    fn insert_left(&mut self, value: T) -> Result<()> {
         if let Some(left) = &mut self.left {
             left.insert(value)
         } else {
